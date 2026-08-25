@@ -1,0 +1,192 @@
+[
+  {
+    "titulo": "Competitive Programmer's Handbook",
+    "autor": "Antti Laaksonen",
+    "ano": 2018,
+    "url_pdf": "https://cses.fi/book/book.pdf",
+    "resumo": "Disseca exaustivamente algoritmos de ordenação e estruturas avançadas em C++, correlacionando limites temporais com tamanho da entrada de dados (N) para evitar TLE sistemáticos.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["algoritmos", "c++", "complexidade"],
+      "nivel": "avancado",
+      "idioma": "en",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "livro",
+      "fonte": "cses.fi",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Projeto de Algoritmos em C",
+    "autor": "Paulo Feofiloff",
+    "ano": 2009,
+    "url_pdf": "https://www.ime.usp.br/~cris/mac0122/slides/aula01.pdf",
+    "resumo": "Consolida os fundamentos de demonstração de corretude e otimização iterativa, essencial para calibrar casos de teste fundamentais na literatura académica sul-americana.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["algoritmos", "c++", "estruturas_de_dados"],
+      "nivel": "intermediario",
+      "idioma": "pt",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "livro",
+      "fonte": "ime.usp.br",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Estruturas de Dados e Seus Algoritmos",
+    "autor": "Lilian Markenzon, Jayme L. Szwarcfiter",
+    "ano": 2010,
+    "url_pdf": "https://doceru.com/doc/nxe155cc",
+    "resumo": "Aprofunda tabelas de espalhamento (hash) e equações de recorrência espaciais, habilitando o agente a analisar restrições de memória de arrays dinâmicos e prevenção de MLE.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["estruturas_de_dados", "complexidade", "algoritmos"],
+      "nivel": "avancado",
+      "idioma": "pt",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "livro",
+      "fonte": "doceru.com",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Problem setting in mathematics and informatics",
+    "autor": "Benjamin Burton",
+    "ano": 2010,
+    "url_pdf": "https://benburton.org/pdf-projector/ioi.pdf",
+    "resumo": "Fornece orientações táticas para contornar problemas NP-Difíceis e impedir que algoritmos baseados em 'adivinhação gulosa' superem as submissões, instruindo lógicas de restrição rigorosas.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["pedagogia", "criacao_de_problemas", "olimpiadas"],
+      "nivel": "avancado",
+      "idioma": "en",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "guia",
+      "fonte": "benburton.org",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "TPS (Task Preparation System): A Tool for Developing Tasks in Programming Contests",
+    "autor": "M. S. Aliyari et al.",
+    "ano": 2019,
+    "url_pdf": "https://ioi.te.lv/oi/pdf/v13_2019_209_215.pdf",
+    "resumo": "Estabelece as normas de hierarquia de diretórios para ferramentas de validação, oferecendo modelos para integradores de compiladores C++ nativos e orquestradores de grader automáticos.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["automacao", "validacao", "casos_de_teste"],
+      "nivel": "intermediario",
+      "idioma": "en",
+      "contexto_educacional": "formacao_profissional",
+      "tipo_documento": "artigo",
+      "fonte": "ioi.te.lv",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Creating informatics olympiad tasks: Exploring the black art",
+    "autor": "Benjamin Burton, Matthieu Hiron",
+    "ano": 2008,
+    "url_pdf": "https://ioinformatics.org/journal/INFOL031.pdf",
+    "resumo": "Relatório magistral sobre modelação abstrata, simplificação topológica de abstrações do mundo real e mecanismos de avaliação puramente comportamentais para rejeitar falsas otimizações.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["criacao_de_problemas", "olimpiadas", "algoritmos"],
+      "nivel": "avancado",
+      "idioma": "en",
+      "contexto_educacional": "formacao_profissional",
+      "tipo_documento": "artigo",
+      "fonte": "ioinformatics.org",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "CMS: a grading system to run the IOI and similar programming contests",
+    "autor": "Stefano Maggiolo, Giovanni Mascellani",
+    "ano": 2014,
+    "url_pdf": "https://ioi.te.lv/oi/pdf/v8_2014_123_132.pdf",
+    "resumo": "Mapeia as fundações estruturais de sandboxing operacionais e gestão de isolamento da camada OS Linux para execuções de testes automáticos num ambiente de elevada exigência e de stress temporal.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["infraestrutura", "juiz_online", "automacao"],
+      "nivel": "intermediario",
+      "idioma": "en",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "relatorio",
+      "fonte": "ioi.te.lv",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Open Data Structures (in C++)",
+    "autor": "Pat Morin",
+    "ano": 2013,
+    "url_pdf": "https://opendatastructures.org/versions/edition-0.1f/ods-cpp.pdf",
+    "resumo": "Anatomia aprofundada da Standard Template Library (STL) em C++, detalhando métricas explícitas e análise vetorial interna, fundamentais para a distinção empírica e modelação da solução de referência.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["estruturas_de_dados", "c++", "complexidade"],
+      "nivel": "basico",
+      "idioma": "en",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "livro",
+      "fonte": "opendatastructures.org",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Mapeamento e análise empírica de misconceptions comuns em avaliações de introdução à programação",
+    "autor": "Sociedade Brasileira de Computação (SBC)",
+    "ano": 2021,
+    "url_pdf": "https://sol.sbc.org.br/index.php/educomp/article/download/14478/14324/",
+    "resumo": "Detalha empiricamente os 'misconceptions' de código, providenciando ao agente uma base taxativa de falhas cognitivas para gerar testes que engatilhem bugs comuns entre estudantes.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["pedagogia", "misconceptions", "python"],
+      "nivel": "basico",
+      "idioma": "pt",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "artigo",
+      "fonte": "sol.sbc.org.br",
+      "licenca": "open_access"
+    }
+  },
+  {
+    "titulo": "Machine Teaching: uma ferramenta didática e de análise de dados para suporte a cursos introdutórios de programação",
+    "autor": "Laura O. Moraes",
+    "ano": 2022,
+    "url_pdf": "https://sol.sbc.org.br/index.php/educomp/article/download/19216/19045/",
+    "resumo": "Instrui os limites operacionais entre validação puramente competitiva e didática, integrando ensinamentos cruciais de painéis avaliativos orientados para a correção da prática docente híbrida.",
+    "data_insercao": "2026-08-25T18:40:00.000Z",
+    "status": "Pendente",
+    "embedding_status": "pending",
+    "metadata": {
+      "tema": ["pedagogia", "juiz_online", "python"],
+      "nivel": "intermediario",
+      "idioma": "pt",
+      "contexto_educacional": "ensino_superior",
+      "tipo_documento": "relatorio",
+      "fonte": "sol.sbc.org.br",
+      "licenca": "open_access"
+    }
+  }
+]
