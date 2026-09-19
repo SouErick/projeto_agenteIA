@@ -122,36 +122,54 @@ vs-code-gaia/
 
 O guia expandido apresenta uma organização recomendada para os próximos módulos, incluindo scripts de ingestão, validadores de schema, Python e complexidade, prompts versionados e workflows exportados.
 
-## Configuração rápida
+## Compilar e executar
 
 ### Pré-requisitos
 
-- Docker e Docker Compose.
-- Uma conta ou projeto Supabase com PostgreSQL e `pgvector` habilitado.
-- Chaves de acesso do provedor de LLM e do Supabase.
+- Docker Desktop com Docker Compose habilitado.
+- Chaves de acesso do OpenAI e do Supabase.
 
-### Variáveis de ambiente
+### 1. Configurar o ambiente
 
-Crie ou ajuste o arquivo `.env` localmente com os valores necessários. Nunca publique chaves de API, senhas ou a `service_role` no repositório.
+Na raiz do projeto, crie o arquivo `.env` a partir do modelo disponível e preencha os valores reais. Nunca versione chaves de API, senhas ou a chave `service_role`.
 
-Exemplo:
+```powershell
+Copy-Item .env.example .env
+```
+
+O arquivo `.env` deve conter, no mínimo:
 
 ```env
-N8N_DB_PASSWORD=defina_uma_senha_forte
 SUPABASE_URL=https://SEU_PROJETO.supabase.co
 SUPABASE_SERVICE_KEY=sua_service_role_key
 OPENAI_API_KEY=sua_openai_key
+N8N_BASIC_AUTH_USER=admin
+N8N_BASIC_AUTH_PASSWORD=defina_uma_senha_forte
+POSTGRES_DB=n8n
+POSTGRES_USER=n8n
+POSTGRES_PASSWORD=defina_uma_senha_forte
 ```
 
-### Executar os serviços
+### 2. Compilar e iniciar os serviços
 
-```bash
-docker compose up -d
+```powershell
+docker compose up -d --build
+```
+
+### 3. Verificar a execução
+
+```powershell
 docker compose ps
 docker compose logs -f n8n
 ```
 
-Depois, acesse o n8n em [http://localhost:5678](http://localhost:5678).
+Acesse o n8n em [http://localhost:5678](http://localhost:5678).
+
+Para encerrar os serviços sem apagar os dados persistidos:
+
+```powershell
+docker compose down
+```
 
 Para a configuração completa do Supabase, da tabela vetorial, da função de busca semântica, da tabela de questões e das credenciais do n8n, consulte o [guia expandido](guia_gaia_curadoria_expandido.md).
 
@@ -179,17 +197,6 @@ reprovada
 necessita_ajustes
 ```
 
-## Segurança e boas práticas
-
-- Não versionar chaves de API, senhas ou arquivos `.env`.
-- Preferir versões fixadas das imagens Docker em ambientes estáveis.
-- Utilizar credenciais internas do n8n e limitar permissões.
-- Não expor a chave `service_role` ao frontend ou ao GitHub.
-- Executar código gerado em ambiente isolado e controlado.
-- Registrar erros, limitações, origem dos documentos e versões dos prompts.
-- Controlar duplicações por identificador de origem e índice do chunk.
-- Não afirmar que um código foi executado ou que ocorreu TLE sem evidência.
-
 ## Testes de aceitação
 
 O protótipo deve conseguir:
@@ -204,16 +211,6 @@ O protótipo deve conseguir:
 - Informar claramente o que foi e o que não foi validado.
 
 O guia expandido também contém exemplos de testes de curadoria, complexidade, formatação e uso restritivo do RAG.
-
-## Evoluções futuras
-
-- Classificação automática de dificuldade.
-- Detecção de duplicidade entre questões.
-- Geração automática de testes e validação diferencial.
-- Execução em sandbox.
-- Versionamento de prompts e métricas de qualidade do RAG.
-- Painel de acompanhamento e aprovação humana dentro do n8n.
-- Suporte a outras linguagens e exportação para formatos do MOJ Naquadah.
 
 ## Autores
 
