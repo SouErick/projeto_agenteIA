@@ -1,7 +1,5 @@
 # Agente GAIA de Curadoria e Formatação de Questões
 
-> **Artefato principal:** leia o [Guia de Implementação do GAIA](guia_gaia_curadoria_expandido.md) para consultar a arquitetura detalhada, a configuração do Docker e do Supabase, o pipeline de curadoria, os scripts, os testes e o checklist técnico do projeto.
-
 ![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
@@ -10,6 +8,53 @@
 O **GAIA** é um agente de Inteligência Artificial para curadoria, validação e formatação de problemas de programação competitiva. O projeto combina **n8n**, **RAG (Retrieval-Augmented Generation)**, **Supabase Vector**, **PostgreSQL**, **Python** e **LLMs** para transformar um tema ou requisito acadêmico em uma questão estruturada, verificável e adequada a plataformas como o MOJ Naquadah.
 
 > O RAG fornece contexto e referências. A validação algorítmica, a execução dos códigos e a revisão humana continuam sendo necessárias.
+
+---
+
+## 🚀 Acesso ao Agente (Avaliação II — Webhook)
+
+O agente está disponível como serviço HTTP no **n8n Cloud**:
+
+| | |
+|---|---|
+| **Workflow n8n Cloud** | [gaia123.app.n8n.cloud](https://gaia123.app.n8n.cloud/workflow/r6V1YhwN2HrIh85H) |
+| **Endpoint principal** | `POST https://gaia123.app.n8n.cloud/webhook/gaia/chat` |
+| **Documentação da API** | [`docs/API_GAIA.md`](docs/API_GAIA.md) |
+| **Workflow exportado** | [`n8n/workflows/gaia_webhook.json`](n8n/workflows/gaia_webhook.json) |
+
+### Exemplo rápido
+
+```bash
+curl -X POST https://gaia123.app.n8n.cloud/webhook/gaia/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Formate um problema de busca binária nível Médio para o MOJ Naquadah",
+    "session_id": "minha-sessao-001",
+    "operation": "formatar"
+  }'
+```
+
+```json
+{
+  "response": "## Problema\n\n### Metadados\n- Título: Busca no Vetor Ordenado\n...",
+  "session_id": "minha-sessao-001",
+  "operation": "formatar",
+  "status": "success",
+  "timestamp": "2026-10-09T15:00:00.000Z"
+}
+```
+
+### Operações disponíveis
+
+| `operation`          | O que faz                                              |
+|----------------------|--------------------------------------------------------|
+| `chat` *(padrão)*    | Conversa geral com o agente                            |
+| `curar`              | Fase 1 — curadoria de problemas por tema/dificuldade   |
+| `formatar`           | Fase 2 — formatação completa para o MOJ Naquadah       |
+| `buscar_problemas`   | Busca problemas existentes na API do MOJ por tag       |
+| `health`             | Verifica se o serviço está disponível                  |
+
+---
 
 ## Objetivos
 
@@ -20,13 +65,52 @@ O **GAIA** é um agente de Inteligência Artificial para curadoria, validação 
 - Gerar soluções de referência em Python e, quando necessário, soluções deliberadamente ineficientes para análise de desempenho.
 - Registrar questões, metadados, validações, alertas e limitações para permitir rastreabilidade e revisão.
 
+---
+
 ## Arquitetura
+
+### Avaliação II — Webhook (atual)
+
+```text
+Aplicação (web / mobile / CLI)
+   |
+   | HTTP POST /webhook/gaia/chat
+   v
+Webhook n8n Cloud
+   |
+   v
+Rotear Operação (Switch)
+   |
+   +--[chat / curar / formatar]--> AI Agent
+   |                                  +--> LLM (GPT-4o mini)
+   |                                  +--> Memória (session_id)
+   |                                  +--> RAG (Supabase Vector)
+   |                                           |
+   |                                           v
+   |                                    Base de conhecimento
+   |                                    (20 documentos técnicos)
+   |
+   +--[buscar_problemas]-----------> HTTP Request
+                                         |
+                                         v
+                                    MOJ Naquadah API
+                                    /api/v1/treino/contest-create/draw
+   |
+   v
+Respond to Webhook
+   |
+   | JSON { response, session_id, status, timestamp }
+   v
+Aplicação
+```
+
+### Avaliação I — Local com Docker (referência)
 
 ```text
 Usuário
    |
    v
-Chat Trigger (n8n)
+Chat Trigger (n8n local :5678)
    |
    v
 AI Agent
@@ -55,15 +139,18 @@ Saída estruturada
 ### Componentes
 
 | Componente | Responsabilidade |
-| --- | --- |
-| Docker | Executar o n8n e os serviços auxiliares. |
-| n8n | Orquestrar entrada, IA, RAG e validações. |
+|---|---|
+| n8n Cloud | Orquestrar entrada, IA, RAG, MOJ API e resposta HTTP. |
+| Webhook | Expor o agente como serviço HTTP consumível por qualquer aplicação. |
 | AI Agent | Interpretar solicitações e coordenar ferramentas. |
-| LLM | Gerar, analisar e revisar conteúdos. |
+| LLM (GPT-4o mini) | Gerar, analisar e revisar conteúdos. |
 | Supabase Vector | Armazenar documentos, embeddings e dados relacionados. |
-| pgvector | Realizar busca por similaridade vetorial. |
-| Python | Implementar soluções e validadores. |
-| PostgreSQL | Persistir documentos, questões e resultados de validação. |
+| pgvector / HNSW | Realizar busca por similaridade vetorial (1536 dims). |
+| MOJ Naquadah API | Buscar problemas existentes por tag e dificuldade. |
+| Python | Ingestão da base de conhecimento e validadores. |
+| Docker | Execução reprodutível dos serviços (Avaliação I). |
+
+---
 
 ## Pipeline de curadoria
 
@@ -73,12 +160,15 @@ Saída estruturada
 4. **Formatação:** produzir título, enunciado, entrada, saída, restrições, exemplos, explicação, solução e complexidade.
 5. **Validação:** executar validações estruturais, semânticas, de código e de testes, mantendo a revisão humana como etapa final.
 
+---
+
 ## Funcionalidades
 
 ### Curadoria
 
 - Identificação do tópico algorítmico e do nível de dificuldade.
-- Consulta à base de conhecimento por busca vetorial.
+- Consulta à base de conhecimento por busca vetorial (RAG).
+- Busca de problemas similares na API do MOJ Naquadah.
 - Detecção de ambiguidades e informações ausentes.
 - Análise de complexidade e compatibilidade com as restrições.
 - Sugestão de casos mínimos, máximos, de borda e de desempenho.
@@ -88,41 +178,54 @@ Saída estruturada
 - Geração de enunciado, entrada, saída, restrições e exemplos.
 - Solução de referência em Python 3.
 - Código AC testado com exemplos e casos extremos.
-- Código potencialmente TLE acompanhado de justificativa de complexidade ou evidência de execução.
-- Validação sintática com Python e execução isolada, com limites de tempo, memória, rede e acesso a arquivos.
-- Testes diferenciais entre solução de referência, solução candidata e, quando possível, um oráculo de força bruta.
+- Código potencialmente TLE acompanhado de justificativa de complexidade.
+- Validação sintática com Python e execução isolada.
+- Testes diferenciais entre solução de referência e solução candidata.
 - Persistência do status e das validações da questão.
+
+---
 
 ## Tecnologias
 
-- **n8n:** orquestração do workflow e integração de APIs.
-- **Supabase Vector / pgvector:** embeddings e recuperação semântica.
+- **n8n Cloud:** orquestração do workflow e exposição via Webhook HTTP.
+- **Supabase Vector / pgvector:** embeddings e recuperação semântica (índice HNSW).
+- **MOJ Naquadah API:** busca de problemas existentes na plataforma.
+- **OpenAI GPT-4o mini:** geração, análise e revisão assistida.
+- **OpenAI text-embedding-3-small:** geração de embeddings (1536 dims).
 - **PostgreSQL:** armazenamento de documentos, questões, metadados e histórico.
-- **Python 3.10+:** soluções, ingestão e validadores.
-- **LLM:** geração, análise e revisão assistida.
-- **Docker:** execução reprodutível dos serviços.
+- **Python 3.10+:** ingestão da base de conhecimento e validadores.
+- **Docker:** execução reprodutível dos serviços em ambiente local.
+
+---
 
 ## Estrutura do projeto
 
 ```text
-vs-code-gaia/
+projeto_agenteIA/
 ├── docker-compose.yml
 ├── Dockerfile
-├── .env                         # Configuração local; não versionar segredos
-├── .env_example                 # Modelo de variáveis de ambiente
+├── .env.example                 # Modelo de variáveis de ambiente
 ├── requirements.txt
 ├── README.md
-├── guia.md                      # Visão geral da arquitetura
 ├── guia_gaia_curadoria_expandido.md
-├── base_conhecimento_agente_curadoria.json
-├── docs/                        # Documentação e materiais auxiliares
-├── n8n/                         # Workflows exportados do n8n
-└── src/                         # Scripts, validadores e integração com o banco
+├── docs/
+│   ├── intro_para_agente.md     # System message do agente
+│   ├── base_conhecimento_agente_curadoria.json  # 20 documentos técnicos
+│   └── API_GAIA.md              # Especificação completa da API (Avaliação II)
+├── n8n/
+│   └── workflows/
+│       ├── agente_curadoria.json   # Workflow Avaliação I (Chat Trigger)
+│       └── gaia_webhook.json       # Workflow Avaliação II (Webhook)
+└── src/
+    ├── scripts/
+    │   └── injetar_base_conhecimento.py
+    └── database/
+        └── models.py
 ```
 
-O guia expandido apresenta uma organização recomendada para os próximos módulos, incluindo scripts de ingestão, validadores de schema, Python e complexidade, prompts versionados e workflows exportados.
+---
 
-## Compilar e executar
+## Compilar e executar (Avaliação I — Local)
 
 ### Pré-requisitos
 
@@ -130,8 +233,6 @@ O guia expandido apresenta uma organização recomendada para os próximos módu
 - Chaves de acesso do OpenAI e do Supabase.
 
 ### 1. Configurar o ambiente
-
-Na raiz do projeto, crie o arquivo `.env` a partir do modelo disponível e preencha os valores reais. Nunca versione chaves de API, senhas ou a chave `service_role`.
 
 ```powershell
 Copy-Item .env.example .env
@@ -152,26 +253,35 @@ POSTGRES_PASSWORD=defina_uma_senha_forte
 
 ### 2. Compilar e iniciar os serviços
 
-```powershell
+```bash
 docker compose up -d --build
 ```
 
 ### 3. Verificar a execução
 
-```powershell
+```bash
 docker compose ps
 docker compose logs -f n8n
 ```
 
 Acesse o n8n em [http://localhost:5678](http://localhost:5678).
 
-Para encerrar os serviços sem apagar os dados persistidos:
+### 4. Injetar a base de conhecimento
 
-```powershell
+```bash
+pip install -r requirements.txt
+python src/scripts/injetar_base_conhecimento.py
+```
+
+Para encerrar sem apagar dados:
+
+```bash
 docker compose down
 ```
 
 Para a configuração completa do Supabase, da tabela vetorial, da função de busca semântica, da tabela de questões e das credenciais do n8n, consulte o [guia expandido](guia_gaia_curadoria_expandido.md).
+
+---
 
 ## Modelo de validação
 
@@ -197,23 +307,13 @@ reprovada
 necessita_ajustes
 ```
 
-## Testes de aceitação
-
-O protótipo deve conseguir:
-
-- Receber uma solicitação de questão.
-- Consultar a base de conhecimento.
-- Produzir uma questão estruturada.
-- Gerar uma solução Python e explicar sua complexidade.
-- Criar casos de teste, incluindo casos extremos.
-- Identificar ambiguidades e limitações.
-- Registrar a questão como rascunho com suas validações.
-- Informar claramente o que foi e o que não foi validado.
-
-O guia expandido também contém exemplos de testes de curadoria, complexidade, formatação e uso restritivo do RAG.
-
+---
 ## Autores
 
 - Igor Moura
 - Arthur D'Olival
 - Erick Sousa Saraiva
+
+---
+
+*IFB — Instituto Federal de Brasília · Disciplina: Agentes de IA · 2026*
